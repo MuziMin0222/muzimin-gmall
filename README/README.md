@@ -1,5 +1,44 @@
 # 环境的搭建
 
+## Linux虚拟机搭建
+
+* virtualbox官网：https://www.virtualbox.org
+  * 下载
+
+* vagrant官网：https://www.vagrantup.com/
+  * 下载
+
+* vagrant官方镜像：https://app.vagrantup.com/boxes/search
+  * 查找
+* 在D盘创建新的目录，在该目录下创建Vagrantfile,执行
+
+```
+vagrant init centos/7
+```
+
+* 启动虚拟机
+
+```
+vagrant up
+```
+
+* 虚拟机网络配置
+
+  * 查看本机中的网关
+  * 修改vagrantfile，这个IP是与本机网卡保持一致的IP
+
+  ```
+    config.vm.network "private_network",ip: "192.168.56.10"
+  ```
+
+  * 重启虚拟机
+
+  ```
+  vagrant reload
+  ```
+
+  
+
 ## docker安装
 
 ```text
@@ -105,3 +144,28 @@ docker run -p 6379:6379 --name redis \
 docker update redis --restart=always
 ```
 
+## docker安装nacos
+
+```
+docker run -d \
+--name nacos \
+-p 8848:8848  -p 9848:9848 -p 9849:9849 \
+--privileged=true \
+-e JVM_XMS=256m \
+-e JVM_XMX=256m \
+-e MODE=standalone \
+-v /opt/nacos/logs/:/home/nacos/logs \
+-v /opt/nacos/conf/:/home/nacos/conf/ \
+--restart=always \
+nacos/nacos-server
+```
+
+
+
+# 服务搭建
+
+## 版本对应
+
+| Spring Cloud Version  | Spring Boot Version |
+| --------------------- | ------------------- |
+| Spring Cloud 2021.0.4 | 2.6.11              |
