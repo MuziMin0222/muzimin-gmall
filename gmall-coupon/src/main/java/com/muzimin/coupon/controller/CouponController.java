@@ -5,6 +5,8 @@ import java.util.Map;
 
 //import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.web.bind.annotation.*;
 
 import com.muzimin.coupon.entity.CouponEntity;
@@ -22,13 +24,19 @@ import com.muzimin.common.utils.R;
  */
 @RestController
 @RequestMapping("/coupon")
+@RefreshScope
 public class CouponController {
     @Autowired
     private CouponService couponService;
 
+    @Value("${coupon.name}")
+    private String name;
+    @Value("${coupon.age}")
+    private String age;
+
     @RequestMapping("/test")
     public R test() {
-        return R.ok().put("name", "张三").put("age", "14");
+        return R.ok().put("name", name).put("age", age);
     }
 
     /**
