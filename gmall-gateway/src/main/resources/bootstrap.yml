@@ -1,0 +1,20 @@
+spring:
+  application:
+    name: gmall-gateway
+  cloud:
+    nacos:
+      discovery:
+        server-addr: localhost:8848
+      config:
+        import-check:
+          enabled: false
+        file-extension: yaml
+        refresh-enabled: true
+        enabled: true
+        server-addr: localhost:8848
+        group: DEFAULT_GROUP
+        namespace: 9a2cf8be-17a4-4b0a-b06e-f9d2c2827be1
+
+
+server:
+  port: 88
