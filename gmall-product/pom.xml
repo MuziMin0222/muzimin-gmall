@@ -1,13 +1,16 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
+
     <parent>
-        <groupId>com.muzimin</groupId>
-        <artifactId>muzimin-gmall</artifactId>
-        <version>1.0-SNAPSHOT</version>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>2.6.11</version>
     </parent>
+
+    <groupId>com.muzimin</groupId>
     <artifactId>gmall-product</artifactId>
-    <packaging>war</packaging>
+    <version>1.0-SNAPSHOT</version>
     <name>gmall-product</name>
     <url>http://maven.apache.org</url>
     <properties>
@@ -21,41 +24,7 @@
             <artifactId>gmall-common</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
-
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-openfeign</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-test</artifactId>
-            <scope>test</scope>
-        </dependency>
-
-        <!--        <dependency>-->
-        <!--            <groupId>com.aliyun.oss</groupId>-->
-        <!--            <artifactId>aliyun-sdk-oss</artifactId>-->
-        <!--            <version>3.5.0</version>-->
-        <!--        </dependency>-->
-
     </dependencies>
-
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>org.springframework.cloud</groupId>
-                <artifactId>spring-cloud-dependencies</artifactId>
-                <version>${spring-cloud.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
     <build>
         <finalName>gmall-product</finalName>
     </build>

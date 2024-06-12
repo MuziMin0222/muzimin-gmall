@@ -1,6 +1,3 @@
-CREATE DATABASE IF NOT EXISTS `gmall_admin` /*!40100 DEFAULT CHARACTER SET utf8mb4 */;
-USE gmall_admin;
-
 -- 菜单
 CREATE TABLE `sys_menu` (
   `menu_id` bigint NOT NULL AUTO_INCREMENT,

@@ -166,6 +166,6 @@ nacos/nacos-server
 
 ## 版本对应
 
-| Spring Cloud Version  | Spring Boot Version |
-| --------------------- | ------------------- |
-| Spring Cloud 2021.0.4 | 2.6.11              |
+| Spring Cloud Version   | Spring Boot Version |
+|------------------------| ------------------- |
+| Spring Cloud 2021.0.4.0 | 2.6.11              |

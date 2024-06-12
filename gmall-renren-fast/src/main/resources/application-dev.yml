@@ -34,6 +34,7 @@ spring:
                         multi-statement-allow: true
 
 
+
 ##多数据源的配置
 #dynamic:
 #  datasource:
@@ -61,3 +62,10 @@ spring:
                 max-wait: -1ms      # 连接池最大阻塞等待时间（使用负值表示没有限制）
                 max-idle: 10      # 连接池中的最大空闲连接
                 min-idle: 5       # 连接池中的最小空闲连接
+    application:
+        name: gamll-renren-fast
+
+    cloud:
+        nacos:
+            discovery:
+                server-addr: localhost:8848
