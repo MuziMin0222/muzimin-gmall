@@ -52,7 +52,7 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
                 .map(new Function<CategoryEntity, CategoryEntity>() {
                     @Override
                     public CategoryEntity apply(CategoryEntity categoryEntity) {
-                        categoryEntity.setChildren(getChildrens(categoryEntity,entities));
+                        categoryEntity.setChildren(getChildrens(categoryEntity, entities));
                         return categoryEntity;
                     }
                 })
