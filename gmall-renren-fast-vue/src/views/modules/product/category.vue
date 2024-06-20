@@ -1,17 +1,24 @@
 <template>
   <div>
     <el-dialog
-      title="提示"
+      v-bind:title="title"
       :visible.sync="dialogVisible"
-      width="30%">
+      width="30%"
+      :close-on-click-modal="false">
       <el-form :model="category">
         <el-form-item label="分类名称">
           <el-input v-model="category.name" autocomplete="off"></el-input>
         </el-form-item>
+        <el-form-item label="图标">
+          <el-input v-model="category.icon" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="计量单位">
+          <el-input v-model="category.productUnit" autocomplete="off"></el-input>
+        </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
     <el-button @click="dialogVisible = false">取 消</el-button>
-    <el-button type="primary" @click="addCategory">确 定</el-button>
+    <el-button type="primary" @click="submitData">确 定</el-button>
       </span>
     </el-dialog>
 
@@ -37,6 +44,11 @@
                      @click="() => remove(node, data)">
             Delete
           </el-button>
+          <el-button type="text"
+                     size="mini"
+                     @click="() => edit(data)">
+            Edit
+          </el-button>
         </span>
       </span>
     </el-tree>
@@ -47,7 +59,19 @@
 export default {
   data() {
     return {
-      category: {name: '', parentCid: 0, catLevel: 0, showStatus: 1, sort: 0},
+      title: null,
+      // append,edit
+      dialogType: '',
+      category: {
+        name: '',
+        parentCid: 0,
+        catLevel: 0,
+        showStatus: 1,
+        sort: 0,
+        catId: null,
+        icon: '',
+        productUnit: ''
+      },
       dialogVisible: false,
       menu: [],
       expandedKey: [],
@@ -70,6 +94,14 @@ export default {
         this.menu = data.data
       })
     },
+    submitData() {
+      if (this.dialogType === 'append') {
+        this.addCategory()
+      }
+      if (this.dialogType === 'edit') {
+        this.updateCategory()
+      }
+    },
     addCategory() {
       console.log('提交的三级分类数据：', this.category)
       this.$http({
@@ -88,11 +120,56 @@ export default {
     },
     append(data) {
       console.log('append', data)
+      this.dialogType = 'append'
+      this.title = '添加分类'
       this.dialogVisible = true
       this.category.parentCid = data.catId
       this.category.catLevel = data.catLevel * 1 + 1
+      this.category.name = ''
+      this.category.parentCid = 0
+      this.category.catLevel = 0
+      this.category.showStatus = 1
+      this.category.sort = 0
+      this.category.catId = null
+      this.category.icon = ''
+      this.category.productUnit = ''
     },
+    edit(data) {
+      console.log('edit', data)
+      this.dialogType = 'edit'
+      this.title = '修改分类'
+      this.dialogVisible = true
 
+      // 发送请求获取当前节点最新的数据
+      this.$http({
+        url: this.$http.adornUrl(`/category/info/${data.catId}`),
+        method: 'get'
+      }).then(({data}) => {
+        // 请求成功之后的数据
+        console.log('要回显的数据', data)
+        this.category.name = data.data.name
+        this.category.catId = data.data.catId
+        this.category.icon = data.data.icon
+        this.category.productUnit = data.data.productUnit
+        this.category.parentCid = data.data.parentCid
+      })
+    },
+    updateCategory() {
+      var {name, catId, icon, productUnit} = this.category
+      this.$http({
+        url: this.$http.adornUrl('/category/update'),
+        method: 'post',
+        data: this.$http.adornData({name, catId, icon, productUnit}, false)
+      }).then(({data}) => {
+        console.log(`更新数据${this.category.catId}成功`)
+        // 关闭对话框
+        this.dialogVisible = false
+        // 刷新菜单
+        this.getMenus()
+        // 设置默认展开的菜单
+        this.expandedKey = [this.category.parentCid];
+      })
+    },
     remove(node, data) {
       var ids = [data.catId]
 
