@@ -121,6 +121,23 @@ export default {
       }
       // 3、当前拖拽节点的最新层级
       console.log(this.updateNodes)
+      this.$http({
+        url: this.$http.adornUrl('/category/update/sort'),
+        method: 'post',
+        data: this.$http.adornData(this.updateNodes, false)
+      }).then(({data}) => {
+        this.$message({
+          message: '菜单顺序等修改成功',
+          type: 'success'
+        });
+        // 刷新菜单
+        this.getMenus()
+        // 设置需要默认的菜单
+        this.expandedKey = [pCid]
+        // 对数据进行还原
+        this.updateNodes = []
+        this.maxLevel = 0
+      })
     },
     updateChildNodeLevel(node) {
       if (node.childNodes.length > 0) {
@@ -136,9 +153,13 @@ export default {
       // 被拖动节点的总层数, 当前拖拽的父节点所在的深度不等于3即可
       this.countNodeLevel(draggingNode.data)
       let deep = this.maxLevel - draggingNode.data.catLevel + 1
-      console.log('当前深度', deep)
 
       if (type === 'inner') {
+        console.log(`
+        当前深度: ${deep};
+        this.maxLevel：${this.maxLevel}；
+        draggingNode.data.catLevel：${draggingNode.data.catLevel}；
+        dropNode.level：${dropNode.level}`);
         return (deep + dropNode.level) <= 3
       } else {
         return (deep + dropNode.parent.level) <= 3
@@ -146,12 +167,12 @@ export default {
     },
     countNodeLevel(node) {
       // 找出所有的子节点，求出最大深度
-      if (node.children != null && node.children.length > 0) {
-        for (let i = 0; i < node.children.length; i++) {
-          if (node.children[i].catLevel > this.maxLevel) {
-            this.maxLevel = node.children[i].catLevel
+      if (node.childNodes != null && node.childNodes.length > 0) {
+        for (let i = 0; i < node.childNodes.length; i++) {
+          if (node.childNodes[i].catLevel > this.maxLevel) {
+            this.maxLevel = node.childNodes[i].catLevel
           }
-          this.countNodeLevel(node.children[i])
+          this.countNodeLevel(node.childNodes[i])
         }
       }
     },
