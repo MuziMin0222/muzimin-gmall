@@ -30,7 +30,8 @@
              draggable
              :allow-drop='allowDrop'
              :expand-on-click-node='false'
-             :default-expanded-keys='expandedKey'>
+             :default-expanded-keys='expandedKey'
+             @node-drop='handleDrop'>
      <span class='custom-tree-node' slot-scope='{ node, data }'>
         <span>{{ node.label }}</span>
         <span>
@@ -61,6 +62,7 @@
 export default {
   data() {
     return {
+      updateNodes: [],
       maxLevel: 0,
       title: null,
       // append,edit
@@ -85,6 +87,50 @@ export default {
     };
   },
   methods: {
+    handleDrop(draggingNode, dropNode, dropType, ev) {
+      console.log('tree drop: ', dropNode.label, dropType)
+      // 1、当前节点最新的父节点ID
+      let pCid = 0;
+      let slibings = null;
+      if (dropType === 'before' || dropType === 'after') {
+        pCid = dropNode.parent.data.catId ? undefined : dropNode.parent.data.catId
+        slibings = dropNode.parent.childNodes
+      } else {
+        pCid = dropNode.data.catId
+        slibings = dropNode.childNodes
+      }
+      // 2、当前拖拽节点的最新顺序
+      for (let i = 0; i < slibings.length; i++) {
+        if (slibings[i].data.catId === draggingNode.data.catId) {
+          // 如果遍历的是当前正在拖拽的节点
+          let catLevel = draggingNode.level
+          if (slibings[i].level !== draggingNode.level) {
+            // 当前节点的层级发生变化
+            catLevel = slibings[i].level
+            // 修改他子节点的层级
+            this.updateChildNodeLevel(slibings[i])
+          }
+          this.updateNodes.push({
+            catId: slibings[i].data.catId,
+            sort: i,
+            parentCid: pCid,
+            catLevel: catLevel
+          })
+        }
+        this.updateNodes.push({catId: slibings[i].data.catId, sort: i})
+      }
+      // 3、当前拖拽节点的最新层级
+      console.log(this.updateNodes)
+    },
+    updateChildNodeLevel(node) {
+      if (node.children.length > 0) {
+        for (let i = 0; i < node.children.length; i++) {
+          var cNode = node.childNodes[i].data;
+          this.updateNodes.push({catId: cNode.catId, catLevel: node.childNodes[i].level})
+          this.updateChildNodeLevel(node.childNodes[i])
+        }
+      }
+    },
     allowDrop(draggingNode, dropNode, type) {
       // 被拖动的当前节点以及所在的父节点总层数不能大于3
       // 被拖动节点的总层数, 当前拖拽的父节点所在的深度不等于3即可
