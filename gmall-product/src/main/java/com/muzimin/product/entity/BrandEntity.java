@@ -5,6 +5,9 @@ import com.baomidou.mybatisplus.annotation.TableName;
 
 import java.io.Serializable;
 import java.util.Date;
+
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import lombok.Data;
 
 /**
@@ -22,6 +25,8 @@ public class BrandEntity implements Serializable {
 	/**
 	 * 品牌id
 	 */
+	//处理精度丢失问题
+	@JsonSerialize(using = ToStringSerializer.class)
 	@TableId
 	private Long brandId;
 	/**
