@@ -37,7 +37,49 @@ vagrant up
   vagrant reload
   ```
 
-  
+
+* 进入虚拟机
+
+```
+vagrant ssh
+```
+
+* 切换到root用户
+
+```
+sudo -i
+```
+
+* 设置root用户的账号和密码
+
+```
+vi /etc/ssh/sshd_config
+```
+
+* 将下列值进行注释放开
+
+```
+LoginGraceTime 2m
+PermitRootLogin yes
+StrictModes yes
+
+## 这个值从no转为yes
+PasswordAuthentication yes
+```
+
+* ssh服务重启，退出虚拟机
+
+```
+service sshd restart
+```
+
+* 虚拟机重启
+
+```
+vagrant reload
+```
+
+
 
 ## docker安装
 
