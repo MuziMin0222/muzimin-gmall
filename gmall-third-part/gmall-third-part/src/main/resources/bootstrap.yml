@@ -1,0 +1,30 @@
+spring:
+  application:
+    name: gmall-third-part
+  cloud:
+    nacos:
+      discovery:
+        server-addr: localhost:8848
+      config:
+        import-check:
+          enabled: false
+        file-extension: yaml
+        refresh-enabled: true
+        enabled: true
+        server-addr: localhost:8848
+        group: DEFAULT_GROUP
+        namespace: dc06536e-031e-4525-a8da-a85f854a3984
+        extension-configs[0]:
+          data-id: oss.yaml
+          group: DEFAULT_GROUP
+          refresh: true
+
+
+minio:
+  endpoint: http://192.168.56.11:9000
+  access-key: fileadmin
+  secret-key: fileadmin
+  bucket-name: gmall
+
+server:
+  port: 30000
