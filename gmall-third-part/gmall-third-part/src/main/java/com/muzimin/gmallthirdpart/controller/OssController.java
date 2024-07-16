@@ -1,14 +1,23 @@
 package com.muzimin.gmallthirdpart.controller;
 
-import com.amazonaws.services.s3.AmazonS3;
+import com.muzimin.common.utils.R;
+import io.minio.GetPresignedObjectUrlArgs;
+import io.minio.MinioClient;
+import io.minio.errors.*;
+import io.minio.http.Method;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.net.URL;
+import java.io.IOException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author: 李煌民
@@ -19,21 +28,37 @@ import java.util.Date;
 public class OssController {
 
     @Autowired
-    private AmazonS3 minioClient;
+    private MinioClient minioClient;
 
     @Value("${minio.bucket-name}")
     private String bucketName;
 
     /**
      * MinIO的签名直传
+     *
      * @return
      */
-    @RequestMapping("/minio/policy")
-    public String policy() {
-        String format = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
-        Date expiration = new Date(System.currentTimeMillis() + 30 * 1000);
+    @RequestMapping("/minio/policy/{objectName}")
+    public R policy(@PathVariable("objectName") String objectName) throws ServerException, InsufficientDataException, ErrorResponseException, IOException, NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException, InternalException {
+        /*String format = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
+        //设置签名的超时时间，现设定为5min
+        Date expiration = new Date(System.currentTimeMillis() + 300 * 1000);
         URL generatePresignedUrl = minioClient.generatePresignedUrl(bucketName, format, expiration);
-        return generatePresignedUrl.toString();
+        return R.ok().put("data", generatePresignedUrl.toString());*/
+
+        Map<String, String> reqParams = new HashMap<String, String>();
+        reqParams.put("response-content-type", "application/json");
+        String format = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
+        String PresignedUrl = minioClient.getPresignedObjectUrl(
+                GetPresignedObjectUrlArgs.builder()
+                        .method(Method.PUT) //这里必须是PUT，如果是GET的话就是文件访问地址了。如果是POST上传会报错.
+                        .bucket(bucketName)
+                        .object(format + "/" + objectName)
+                        .expiry(60 * 60 * 24)
+                        .extraQueryParams(reqParams)
+                        .build());
+
+        return R.ok().put("data", PresignedUrl);
     }
 
 }

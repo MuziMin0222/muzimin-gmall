@@ -1,11 +1,6 @@
 package com.muzimin.gmallthirdpart.config;
 
-import com.amazonaws.ClientConfiguration;
-import com.amazonaws.Protocol;
-import com.amazonaws.auth.AWSStaticCredentialsProvider;
-import com.amazonaws.auth.BasicAWSCredentials;
-import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.AmazonS3ClientBuilder;
+import io.minio.MinioClient;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -26,9 +21,18 @@ public class MinioConfig {
     private String minioSecretKey;
 
     @Bean
+    public MinioClient minioClient() {
+        return MinioClient
+                .builder()
+                .endpoint(minioEndpoint)
+                .credentials(minioAccessKey, minioSecretKey)
+                .build();
+    }
+
+    /*@Bean
     public AmazonS3 minioClient() {
         ClientConfiguration config = new ClientConfiguration();
-        config.setProtocol(Protocol.HTTPS);
+        config.setProtocol(Protocol.HTTP);
         config.disableSocketProxy();
         // 初始化S3上传操作类
         BasicAWSCredentials credentials = new BasicAWSCredentials(minioAccessKey, minioSecretKey);
@@ -36,11 +40,11 @@ public class MinioConfig {
                 .standard()
                 .withClientConfiguration(config)
                 .withCredentials(new AWSStaticCredentialsProvider(credentials))
-                .withRegion("zh-east-1") // Regions.CN_NORTH_1.getName()
-                //.withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration(endpoint, region))
+                //.withRegion(minioEndpoint) // Regions.CN_NORTH_1.getName()
+                .withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration(minioEndpoint, ""))
                 .enablePathStyleAccess()
                 .build();
 
         return client;
-    }
+    }*/
 }
