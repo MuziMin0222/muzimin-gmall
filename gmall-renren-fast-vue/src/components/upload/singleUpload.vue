@@ -1,7 +1,8 @@
-<template> 
+<template>
   <div>
     <el-upload
-      action='http://192.168.56.11:9000'
+      action=''
+      :http-request="uploadFile"
       :data='dataObj'
       list-type='picture'
       :multiple='false' :show-file-list='showFileList'
@@ -18,9 +19,10 @@
     </el-dialog>
   </div>
 </template>
+
 <script>
-import {policy} from './policy'
-import {getUUID} from '@/utils'
+import axios from 'axios';
+import {policy} from './policy';
 
 export default {
   name: 'singleUpload',
@@ -42,13 +44,13 @@ export default {
       return [{
         name: this.imageName,
         url: this.imageUrl
-      }]
+      }];
     },
     showFileList: {
-      get: function () {
+      get() {
         return this.value !== null && this.value !== '' && this.value !== undefined;
       },
-      set: function (newValue) {
+      set() {
       }
     }
   },
@@ -62,29 +64,50 @@ export default {
   },
   methods: {
     emitInput(val) {
-      this.$emit('input', val)
+      console.log('start emitInput')
+      this.$emit('input', val);
     },
     handleRemove(file, fileList) {
+      console.log('start handleRemove')
       this.emitInput('');
     },
     handlePreview(file) {
+      console.log('start handlePreview')
       this.dialogVisible = true;
     },
     beforeUpload(file) {
       let _self = this;
       return new Promise((resolve, reject) => {
         policy(file).then(response => {
-          console.log(response.data)
-          console.log(`这是file：${file}`)
+          console.log(response.data);
+          console.log(`这是file：${file}`);
           _self.dataObj.policy = response.data;
-          resolve(true)
+          resolve(true);
         }).catch(err => {
-          reject(new Error(err))
+          reject(new Error(err));
+        });
+      });
+    },
+    uploadFile(file) {
+      let config = {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      };
+
+      // 执行 put 操作
+      axios.put(this.dataObj.policy, file, config)
+        .then(response => {
+          // 处理 put 请求的响应结果
+          console.log('PUT 请求成功...', response);
         })
-      })
+        .catch(error => {
+          // 处理 put 请求的错误
+          console.log('PUT 请求失败...', error);
+        });
     },
     handleUploadSuccess(res, file) {
-      console.log('上传成功...')
+      console.log('上传成功...');
       this.showFileList = true;
       this.fileList.pop();
       this.fileList.push({
@@ -94,10 +117,8 @@ export default {
       this.emitInput(this.fileList[0].url);
     }
   }
-}
+};
 </script>
 <style>
 
 </style>
-
-
