@@ -55,13 +55,7 @@ export default {
   data() {
     return {
       dataObj: {
-        policy: '',
-        signature: '',
-        key: '',
-        ossaccessKeyId: '',
-        dir: '',
-        host: ''
-        // callback:'',
+        policy: ''
       },
       dialogVisible: false
     };
@@ -79,14 +73,10 @@ export default {
     beforeUpload(file) {
       let _self = this;
       return new Promise((resolve, reject) => {
-        policy().then(response => {
+        policy(file).then(response => {
           console.log(response.data)
-          _self.dataObj.policy = response.data.policy;
-          _self.dataObj.signature = response.data.signature;
-          _self.dataObj.ossaccessKeyId = response.data.accessid;
-          _self.dataObj.key = response.data.dir + '/' + getUUID() + `_${file}`;
-          _self.dataObj.dir = response.data.dir;
-          _self.dataObj.host = response.data.host;
+          console.log(`这是file：${file}`)
+          _self.dataObj.policy = response.data;
           resolve(true)
         }).catch(err => {
           reject(new Error(err))
@@ -99,7 +89,7 @@ export default {
       this.fileList.pop();
       this.fileList.push({
         name: file.name,
-        url: this.dataObj.host + '/' + this.dataObj.key.replace(`${file}`, file.name)
+        url: this.dataObj.policy
       });
       this.emitInput(this.fileList[0].url);
     }
