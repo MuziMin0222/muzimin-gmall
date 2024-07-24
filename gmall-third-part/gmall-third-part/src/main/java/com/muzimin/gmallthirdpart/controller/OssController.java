@@ -17,6 +17,7 @@ import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
@@ -32,6 +33,9 @@ public class OssController {
 
     @Value("${minio.bucket-name}")
     private String bucketName;
+
+    @Value("${minio.endpoint}")
+    private String endpoint;
 
     /**
      * MinIO的签名直传
@@ -49,16 +53,23 @@ public class OssController {
         Map<String, String> reqParams = new HashMap<String, String>();
         reqParams.put("response-content-type", "application/json");
         String format = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
+        String minioPath = format + "/" + objectName;
         String PresignedUrl = minioClient.getPresignedObjectUrl(
                 GetPresignedObjectUrlArgs.builder()
                         .method(Method.PUT) //这里必须是PUT，如果是GET的话就是文件访问地址了。如果是POST上传会报错.
                         .bucket(bucketName)
-                        .object(format + "/" + objectName)
+                        .object(minioPath)
                         .expiry(60 * 60 * 24)
                         .extraQueryParams(reqParams)
                         .build());
 
-        return R.ok().put("data", PresignedUrl);
+        Map<String, String> respMap= new LinkedHashMap<>();
+        respMap.put("name", objectName);
+        respMap.put("host", PresignedUrl);
+        respMap.put("path", minioPath);
+        respMap.put("url", endpoint + "/" + bucketName + "/" + minioPath);
+
+        return R.ok().put("data", respMap);
     }
 
 }

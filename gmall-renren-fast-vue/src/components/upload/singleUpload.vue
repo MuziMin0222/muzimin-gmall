@@ -2,7 +2,6 @@
   <div>
     <el-upload
       action=''
-      :http-request="uploadFile"
       :data='dataObj'
       list-type='picture'
       :multiple='false' :show-file-list='showFileList'
@@ -21,7 +20,6 @@
 </template>
 
 <script>
-import axios from 'axios';
 import {policy} from './policy';
 
 export default {
@@ -57,7 +55,9 @@ export default {
   data() {
     return {
       dataObj: {
-        policy: ''
+        policy: '',
+        objectName: '',
+        minioPath: ''
       },
       dialogVisible: false
     };
@@ -79,42 +79,39 @@ export default {
       let _self = this;
       return new Promise((resolve, reject) => {
         policy(file).then(response => {
-          console.log(response.data);
-          console.log(`这是file：${file}`);
-          _self.dataObj.policy = response.data;
+          console.log('response：', response);
+          _self.dataObj.policy = response.data.host;
+          _self.dataObj.name = response.data.name;
+          _self.dataObj.minioPath = response.data.url;
+
+          let newFileName = this.dataObj.name;
+          let imageType = 'image/' + newFileName.substring(newFileName.lastIndexOf('.') + 1);
+          console.log('imageType:', imageType)
+          let newFile = new File([file], newFileName, {type: imageType});
+          this.$axios.request({
+            url: this.dataObj.policy,
+            method: 'put',
+            data: newFile
+          }).then(res => {
+            console.log('PUT 请求成功...', res);
+            this.showFileList = true;
+            this.fileList.pop();
+            this.fileList.push({
+              name: file.name,
+              url: this.dataObj.minioPath
+            });
+            console.log('filelist', this.fileList)
+            this.emitInput(this.fileList[0].url);
+          })
+
           resolve(true);
         }).catch(err => {
           reject(new Error(err));
         });
       });
     },
-    uploadFile(file) {
-      let config = {
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        }
-      };
+    handleUploadSuccess(response, file, fileList) {
 
-      // 执行 put 操作
-      axios.put(this.dataObj.policy, file, config)
-        .then(response => {
-          // 处理 put 请求的响应结果
-          console.log('PUT 请求成功...', response);
-        })
-        .catch(error => {
-          // 处理 put 请求的错误
-          console.log('PUT 请求失败...', error);
-        });
-    },
-    handleUploadSuccess(res, file) {
-      console.log('上传成功...');
-      this.showFileList = true;
-      this.fileList.pop();
-      this.fileList.push({
-        name: file.name,
-        url: this.dataObj.policy
-      });
-      this.emitInput(this.fileList[0].url);
     }
   }
 };

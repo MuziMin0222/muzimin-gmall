@@ -40,6 +40,18 @@ public class MiniIODemo {
         System.out.println(generatePresignedUrl.toString());
     }*/
 
+    /**
+     * curl -X PUT -T "/root/anaconda-ks.cfg" "http://192.168.56.11:9000/gmall/2024-07-16?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Date=20240716T144104Z&X-Amz-SignedHeaders=host&X-Amz-Expires=300&X-Amz-Credential=fileadmin%2F20240716%2F%2Fs3%2Faws4_request&X-Amz-Signature=ef6f3f57730eaa92ddcef96536d4256952b0244d888198047321435e6371a802"
+     * @throws ServerException
+     * @throws InsufficientDataException
+     * @throws ErrorResponseException
+     * @throws IOException
+     * @throws NoSuchAlgorithmException
+     * @throws InvalidKeyException
+     * @throws InvalidResponseException
+     * @throws XmlParserException
+     * @throws InternalException
+     */
     @Test
     public void getpolicy() throws ServerException, InsufficientDataException, ErrorResponseException, IOException, NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException, InternalException {
         MinioClient minioClient = MinioClient.builder().endpoint("http://192.168.56.11:9000")
