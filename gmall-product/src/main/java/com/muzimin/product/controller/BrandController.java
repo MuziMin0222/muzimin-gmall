@@ -1,10 +1,12 @@
 package com.muzimin.product.controller;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Map;
 
 //import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,6 +18,7 @@ import com.muzimin.product.service.BrandService;
 import com.muzimin.common.utils.PageUtils;
 import com.muzimin.common.utils.R;
 
+import javax.validation.Valid;
 
 
 /**
@@ -36,7 +39,7 @@ public class BrandController {
      */
     @RequestMapping("/list")
     //@RequiresPermissions(":brand:list")
-    public R list(@RequestParam Map<String, Object> params){
+    public R list(@RequestParam Map<String, Object> params) {
         PageUtils page = brandService.queryPage(params);
 
         return R.ok().put("page", page);
@@ -48,8 +51,8 @@ public class BrandController {
      */
     @RequestMapping("/info/{brandId}")
     //@RequiresPermissions(":brand:info")
-    public R info(@PathVariable("brandId") Long brandId){
-		BrandEntity brand = brandService.getById(brandId);
+    public R info(@PathVariable("brandId") Long brandId) {
+        BrandEntity brand = brandService.getById(brandId);
 
         return R.ok().put("brand", brand);
     }
@@ -59,9 +62,18 @@ public class BrandController {
      */
     @RequestMapping("/save")
     //@RequiresPermissions(":brand:save")
-    public R save(@RequestBody BrandEntity brand){
-		brandService.save(brand);
-
+    public R save(@Valid @RequestBody BrandEntity brand, BindingResult result) {
+        HashMap<String, String> map = new HashMap<>();
+        if (result.hasErrors()) {
+            result.getFieldErrors().forEach((item) -> {
+                String message = item.getDefaultMessage();
+                String field = item.getField();
+                map.put(field, message);
+            });
+            return R.error(400, "提交的数据不合法").put("data", map);
+        } else {
+            brandService.save(brand);
+        }
         return R.ok();
     }
 
@@ -70,8 +82,8 @@ public class BrandController {
      */
     @RequestMapping("/update")
     //@RequiresPermissions(":brand:update")
-    public R update(@RequestBody BrandEntity brand){
-		brandService.updateById(brand);
+    public R update(@RequestBody BrandEntity brand) {
+        brandService.updateById(brand);
 
         return R.ok();
     }
@@ -81,8 +93,8 @@ public class BrandController {
      */
     @RequestMapping("/delete")
     //@RequiresPermissions(":brand:delete")
-    public R delete(@RequestBody Long[] brandIds){
-		brandService.removeByIds(Arrays.asList(brandIds));
+    public R delete(@RequestBody Long[] brandIds) {
+        brandService.removeByIds(Arrays.asList(brandIds));
 
         return R.ok();
     }
