@@ -5,8 +5,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 //import org.apache.shiro.authz.annotation.RequiresPermissions;
+import com.muzimin.common.valid.AddGroup;
+import com.muzimin.common.valid.UpdateGroup;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,6 +30,21 @@ import javax.validation.Valid;
  * @author muzimin
  * @email 1367930183@qq.com
  * @date 2024-06-01 17:45:22
+ *
+ * JSR303：
+ *  1、给Bean添加校验注解，并定义自己的message消息
+ *  2、开启校验功能@Valid
+ *      效果：校验错误以后会有一个默认的反应
+ *  3、给校验的bean后紧跟一个BindingResult，就可以获取到校验的结果
+ *  4、分组校验（多场景的复杂校验）
+ *      1、给校验注解标注什么情况下需要进行校验
+ *      2、controller中需要添加@Validated的注解，表示该方法在什么时候需要进行校验
+ *      3、默认没有指定分组的校验注解，在分组校验情况下不生效
+ *  5、自定义校验
+ *      1、编写一个自定义的校验注解
+ *      2、编写一个自定义的校验器
+ *      3、
+ *
  */
 @RestController
 @RequestMapping("/brand")
@@ -62,7 +80,7 @@ public class BrandController {
      */
     @RequestMapping("/save")
     //@RequiresPermissions(":brand:save")
-    public R save(@Valid @RequestBody BrandEntity brand/*, BindingResult result*/) {
+    public R save(@Validated({AddGroup.class}) @RequestBody BrandEntity brand/*, BindingResult result*/) {
         /*HashMap<String, String> map = new HashMap<>();
         if (result.hasErrors()) {
             result.getFieldErrors().forEach((item) -> {
@@ -83,7 +101,7 @@ public class BrandController {
      */
     @RequestMapping("/update")
     //@RequiresPermissions(":brand:update")
-    public R update(@RequestBody BrandEntity brand) {
+    public R update(@Validated({UpdateGroup.class}) @RequestBody BrandEntity brand) {
         brandService.updateById(brand);
 
         return R.ok();
