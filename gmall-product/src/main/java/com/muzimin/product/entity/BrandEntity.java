@@ -9,7 +9,9 @@ import java.util.Date;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import com.muzimin.common.valid.AddGroup;
+import com.muzimin.common.valid.ListValue;
 import com.muzimin.common.valid.UpdateGroup;
+import com.muzimin.common.valid.UpdateStatusGroup;
 import lombok.Data;
 import org.hibernate.validator.constraints.URL;
 
@@ -54,11 +56,12 @@ public class BrandEntity implements Serializable {
     /**
      * 显示状态[0-不显示；1-显示]
      */
+    @ListValue(vals = {0, 1}, groups = {AddGroup.class, UpdateStatusGroup.class})
     private Integer showStatus;
     /**
      * 检索首字母
      */
-    @Pattern(regexp = "/^[a-zA-Z]$/", message = "检索首字母必须是a-z或者A-Z的字母", groups = {AddGroup.class, UpdateGroup.class})
+    @Pattern(regexp = "^[a-zA-Z]$", message = "检索首字母必须是a-z或者A-Z的字母", groups = {AddGroup.class, UpdateGroup.class})
     @NotBlank(groups = {AddGroup.class})
     private String firstLetter;
     /**

@@ -7,6 +7,7 @@ import java.util.Map;
 //import org.apache.shiro.authz.annotation.RequiresPermissions;
 import com.muzimin.common.valid.AddGroup;
 import com.muzimin.common.valid.UpdateGroup;
+import com.muzimin.common.valid.UpdateStatusGroup;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
@@ -43,7 +44,7 @@ import javax.validation.Valid;
  *  5、自定义校验
  *      1、编写一个自定义的校验注解
  *      2、编写一个自定义的校验器
- *      3、
+ *      3、关联自定义的校验器注解和自定义校验器的绑定
  *
  */
 @RestController
@@ -102,6 +103,17 @@ public class BrandController {
     @RequestMapping("/update")
     //@RequiresPermissions(":brand:update")
     public R update(@Validated({UpdateGroup.class}) @RequestBody BrandEntity brand) {
+        brandService.updateById(brand);
+
+        return R.ok();
+    }
+
+    /**
+     * 修改状态
+     */
+    @RequestMapping("/update/status")
+    //@RequiresPermissions(":brand:update")
+    public R updateStatus(@Validated({UpdateStatusGroup.class}) @RequestBody BrandEntity brand) {
         brandService.updateById(brand);
 
         return R.ok();
