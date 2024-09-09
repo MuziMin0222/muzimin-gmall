@@ -50,9 +50,11 @@ vagrant ssh
 sudo -i
 ```
 
-* 设置root用户的账号和密码
+* 设置root用户的账号和密码和配置ssh远程登录
 
 ```
+[root@localhost ~]#passwd
+
 vi /etc/ssh/sshd_config
 ```
 
@@ -77,6 +79,18 @@ service sshd restart
 
 ```
 vagrant reload
+```
+
+* 修改hostname
+
+```
+hostnamectl set-hostname 主机名
+```
+
+* 配置centos的yum源：
+
+```
+https://www.cnblogs.com/zuoyang/p/18182547#:~:text=%E4%B8%80%E3%80%81%E5%A4%87%E4%BB%BD%E5%8E%9F%E6%9C%89%E7%9A%84yum
 ```
 
 
