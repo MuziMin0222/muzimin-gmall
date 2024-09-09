@@ -4,6 +4,8 @@ import java.util.Arrays;
 import java.util.Map;
 
 //import org.apache.shiro.authz.annotation.RequiresPermissions;
+import com.muzimin.product.service.CategoryService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -24,11 +26,15 @@ import com.muzimin.common.utils.R;
  * @email 1367930183@qq.com
  * @date 2024-06-01 17:45:22
  */
+@Slf4j
 @RestController
 @RequestMapping("/attrgroup")
 public class AttrGroupController {
     @Autowired
     private AttrGroupService attrGroupService;
+
+    @Autowired
+    private CategoryService categoryService;
 
     /**
      * 列表
@@ -58,6 +64,10 @@ public class AttrGroupController {
     //@RequiresPermissions(":attrgroup:info")
     public R info(@PathVariable("attrGroupId") Long attrGroupId) {
         AttrGroupEntity attrGroup = attrGroupService.getById(attrGroupId);
+
+        Long catelogId = attrGroup.getCatelogId();
+        Long[] catelogPath = categoryService.findCatelogPath(catelogId);
+        attrGroup.setCatelogPath(catelogPath);
 
         return R.ok().put("attrGroup", attrGroup);
     }
