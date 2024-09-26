@@ -751,9 +751,9 @@ export default {
 
       // 动态生成笛卡尔积
       while (true) {
-        for (var index in list) {
-          tempCount = point[index]['count'];
-          temp.push(list[index][tempCount]);
+        for (var index1 in list) {
+          tempCount = point[index1]['count'];
+          temp.push(list[index1][tempCount]);
         }
 
         // 压入结果数组
@@ -762,17 +762,17 @@ export default {
 
         // 检查指针最大值问题
         while (true) {
-          if (point[index]['count'] + 1 >= list[index].length) {
-            point[index]['count'] = 0;
-            pIndex = point[index]['parent'];
+          if (point[index1]['count'] + 1 >= list[index1].length) {
+            point[index1]['count'] = 0;
+            pIndex = point[index1]['parent'];
             if (pIndex == null) {
               return result;
             }
 
             // 赋值parent进行再次检查
-            index = pIndex;
+            index1 = pIndex;
           } else {
-            point[index]['count']++;
+            point[index1]['count']++;
             break;
           }
         }
@@ -783,21 +783,21 @@ export default {
   created() {},
   // 生命周期 - 挂载完成（可以访问DOM元素）
   mounted() {
-    this.catPathSub = PubSub.subscribe('catPath', (msg, val) => {
+    this.catPathSub = this.PubSub.subscribe('catPath', (msg, val) => {
       this.spu.catalogId = val[val.length - 1];
     });
-    this.brandIdSub = PubSub.subscribe('brandId', (msg, val) => {
+    this.brandIdSub = this.PubSub.subscribe('brandId', (msg, val) => {
       this.spu.brandId = val;
     });
-    this.getMemberLevels();
+    this.getMemberLevels()
   },
   beforeCreate() {}, // 生命周期 - 创建之前
   beforeMount() {}, // 生命周期 - 挂载之前
   beforeUpdate() {}, // 生命周期 - 更新之前
   updated() {}, // 生命周期 - 更新之后
   beforeDestroy() {
-    PubSub.unsubscribe(this.catPathSub);
-    PubSub.unsubscribe(this.brandIdSub);
+    this.PubSub.unsubscribe(this.catPathSub);
+    this.PubSub.unsubscribe(this.brandIdSub);
   }, // 生命周期 - 销毁之前
   destroyed() {}, // 生命周期 - 销毁完成
   activated() {} // 如果页面有keep-alive缓存功能，这个函数会触发

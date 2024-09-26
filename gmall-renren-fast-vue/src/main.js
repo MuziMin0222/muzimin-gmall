@@ -11,6 +11,7 @@ import httpRequest from '@/utils/httpRequest' // api: https://github.com/axios/a
 import { isAuth } from '@/utils'
 import cloneDeep from 'lodash/cloneDeep'
 import axios from 'axios'
+import PubSub from 'pubsub-js';
 
 Vue.use(VueCookie)
 Vue.config.productionTip = false
@@ -24,6 +25,7 @@ if (process.env.NODE_ENV !== 'production') {
 Vue.prototype.$http = httpRequest // ajax请求方法
 Vue.prototype.isAuth = isAuth     // 权限方法
 Vue.prototype.$axios = axios
+Vue.prototype.PubSub = PubSub
 
 // 保存整站vuex本地储存初始状态
 window.SITE_CONFIG['storeState'] = cloneDeep(store.state)

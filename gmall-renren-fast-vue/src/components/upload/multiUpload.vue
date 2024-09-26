@@ -79,7 +79,7 @@ export default {
           })
           .catch(err => {
             console.log('出错了...', err)
-            reject(false);
+            reject(new Error(err));
           });
       });
     },
