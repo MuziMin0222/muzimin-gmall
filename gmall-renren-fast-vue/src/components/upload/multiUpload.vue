@@ -21,13 +21,13 @@
 </template>
 <script>
 import { policy } from './policy';
-import { getUUID } from '@/utils'
+// import { getUUID } from '@/utils'
 export default {
   name: 'multiUpload',
   props: {
-    //图片属性数组
+    // 图片属性数组
     value: Array,
-    //最大上传图片数量
+    // 最大上传图片数量
     maxCount: {
       type: Number,
       default: 30
@@ -73,12 +73,12 @@ export default {
       return new Promise((resolve, reject) => {
         policy()
           .then(response => {
-            console.log('这是什么${filename}');
+            // console.log(`这是什么${filename}`);
             _self.dataObj.policy = response.data
             resolve(true);
           })
           .catch(err => {
-            console.log('出错了...',err)
+            console.log('出错了...', err)
             reject(false);
           });
       });

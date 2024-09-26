@@ -1,5 +1,6 @@
 package com.muzimin.product.service.impl;
 
+import com.muzimin.product.service.CategoryBrandRelationService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,11 +20,15 @@ import com.muzimin.common.utils.Query;
 import com.muzimin.product.dao.CategoryDao;
 import com.muzimin.product.entity.CategoryEntity;
 import com.muzimin.product.service.CategoryService;
+import org.springframework.transaction.annotation.Transactional;
 
 
 @Service("categoryService")
 @Slf4j
 public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity> implements CategoryService {
+
+    @Autowired
+    CategoryBrandRelationService categoryBrandRelationService;
 
     @Override
     public PageUtils queryPage(Map<String, Object> params) {
@@ -85,6 +90,18 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
         log.info("parentPath: {}", parentPath);
         Collections.reverse(parentPath);
         return parentPath.toArray(new Long[parentPath.size()]);
+    }
+
+    /**
+     * 级联更新所有关联的数据
+     * @param category
+     */
+    // 开启事务操作
+    @Transactional
+    @Override
+    public void updateCascade(CategoryEntity category) {
+        this.updateById(category);
+        categoryBrandRelationService.updateCategory(category.getCatId(),category.getName());
     }
 
     private List<Long> findParentPath(Long catelogId, List<Long> paths) {
