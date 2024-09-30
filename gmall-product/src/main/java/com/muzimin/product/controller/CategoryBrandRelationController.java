@@ -36,7 +36,7 @@ public class CategoryBrandRelationController {
     @GetMapping("/catelog/list")
     public R catelogList(@RequestParam("brandId") Long brandId) {
         List<CategoryBrandRelationEntity> data = categoryBrandRelationService.list(
-                new QueryWrapper<CategoryBrandRelationEntity>().eq("barnd_id", brandId)
+                new QueryWrapper<CategoryBrandRelationEntity>().eq("brand_id", brandId)
         );
 
         return R.ok().put("data", data);

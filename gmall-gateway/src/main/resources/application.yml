@@ -33,6 +33,13 @@ spring:
           filters:
             - RewritePath=/api/(?<segment>.*),/$\{segment}
 
+        - id: product_route_categorybrandrelation
+          uri: lb://gmall-product
+          predicates:
+            - Path=/api/categorybrandrelation/**
+          filters:
+            - RewritePath=/api/(?<segment>.*),/$\{segment}
+
         - id: third_part
           uri: lb://gmall-third-part
           predicates:
