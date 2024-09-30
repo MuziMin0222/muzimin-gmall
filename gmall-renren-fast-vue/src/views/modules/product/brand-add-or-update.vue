@@ -115,7 +115,7 @@ export default {
         if (this.dataForm.brandId) {
           this.$http({
             url: this.$http.adornUrl(
-              `/product/brand/info/${this.dataForm.brandId}`
+              `/brand/info/${this.dataForm.brandId}`
             ),
             method: 'get',
             params: this.$http.adornParams()
