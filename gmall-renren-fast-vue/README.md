@@ -17,3 +17,19 @@
 
 ## 更新日志
 每个版本的详细更改都记录在[release notes](https://github.com/renrenio/renren-fast-vue/releases)中。
+
+
+## 关于node-sass安装失败的解决方式
+1. 下载cnpm
+2. 手动安装node-sass镜像源
+```shell
+npm config set sass_binary _site=https://npm.taobao.org/mirrors/node-sass
+```
+3. 使用cnpm下载依赖
+```shell
+cnpm install
+```
+4. 运行项目
+```shell
+npm run dev
+```
