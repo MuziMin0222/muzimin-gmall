@@ -3,6 +3,7 @@ package com.muzimin.product.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.muzimin.common.utils.PageUtils;
 import com.muzimin.product.entity.AttrEntity;
+import com.muzimin.product.vo.AttrVo;
 
 import java.util.Map;
 
@@ -16,5 +17,7 @@ import java.util.Map;
 public interface AttrService extends IService<AttrEntity> {
 
     PageUtils queryPage(Map<String, Object> params);
+
+    void saveAttr(AttrVo attr);
 }
 
