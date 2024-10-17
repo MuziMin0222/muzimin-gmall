@@ -1,11 +1,13 @@
 package com.muzimin.product.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.muzimin.product.dao.AttrAttrgroupRelationDao;
 import com.muzimin.product.dao.AttrGroupDao;
 import com.muzimin.product.dao.CategoryDao;
 import com.muzimin.product.entity.AttrAttrgroupRelationEntity;
 import com.muzimin.product.entity.AttrGroupEntity;
 import com.muzimin.product.entity.CategoryEntity;
+import com.muzimin.product.service.CategoryService;
 import com.muzimin.product.vo.AttrRespVo;
 import com.muzimin.product.vo.AttrVo;
 import org.springframework.beans.BeanUtils;
@@ -40,6 +42,9 @@ public class AttrServiceImpl extends ServiceImpl<AttrDao, AttrEntity> implements
 
     @Autowired
     CategoryDao categoryDao;
+
+    @Autowired
+    CategoryService categoryService;
 
     @Override
     public PageUtils queryPage(Map<String, Object> params) {
@@ -110,6 +115,55 @@ public class AttrServiceImpl extends ServiceImpl<AttrDao, AttrEntity> implements
         ).collect(Collectors.toList());
         pageUtils.setList(attrRespVos);
         return pageUtils;
+    }
+
+    @Override
+    public AttrRespVo getAttrInfo(Long attrId) {
+        AttrEntity attrEntity = this.getById(attrId);
+        AttrRespVo respVo = new AttrRespVo();
+
+        BeanUtils.copyProperties(attrEntity, respVo);
+        AttrAttrgroupRelationEntity relationEntity = relationDao.selectOne(new QueryWrapper<AttrAttrgroupRelationEntity>().eq("attr_id", attrId));
+
+        // 1、设置分组信息
+        if (relationEntity != null) {
+            respVo.setAttrGroupId(relationEntity.getAttrGroupId());
+            AttrGroupEntity groupEntity = attrGroupDao.selectById(relationEntity.getAttrGroupId());
+            if (groupEntity != null) {
+                respVo.setGroupName(groupEntity.getAttrGroupName());
+            }
+        }
+
+        // 2、设置分类信息
+        Long catelogId = attrEntity.getCatelogId();
+        Long[] catelogPath = categoryService.findCatelogPath(catelogId);
+        respVo.setCatelogPath(catelogPath);
+        CategoryEntity categoryEntity = categoryDao.selectById(catelogId);
+        if (categoryEntity != null) {
+            respVo.setCatelogName(categoryEntity.getName());
+        }
+
+        return respVo;
+    }
+
+    @Transactional
+    @Override
+    public void updateAttr(AttrVo attr) {
+        AttrEntity attrEntity = new AttrEntity();
+        BeanUtils.copyProperties(attr, attrEntity);
+        this.updateById(attrEntity);
+        AttrAttrgroupRelationEntity relationEntity = new AttrAttrgroupRelationEntity();
+        relationEntity.setAttrGroupId(attr.getAttrGroupId());
+        relationEntity.setAttrId(attr.getAttrId());
+
+        Integer selectCount = relationDao.selectCount(new QueryWrapper<AttrAttrgroupRelationEntity>().eq("attr_id", attr.getAttrId()));
+        if (selectCount > 0) {
+            // 1、修改分组关联
+            relationDao.update(relationEntity, new UpdateWrapper<AttrAttrgroupRelationEntity>().eq("attr_id", attr.getAttrId()));
+        }else {
+            relationDao.insert(relationEntity);
+        }
+
     }
 
 }
