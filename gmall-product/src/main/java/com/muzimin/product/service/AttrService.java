@@ -6,6 +6,7 @@ import com.muzimin.product.entity.AttrEntity;
 import com.muzimin.product.vo.AttrRespVo;
 import com.muzimin.product.vo.AttrVo;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -26,5 +27,7 @@ public interface AttrService extends IService<AttrEntity> {
     AttrRespVo getAttrInfo(Long attrId);
 
     void updateAttr(AttrVo attr);
+
+    List<AttrEntity> getRelationAttr(Long attrgroupId);
 }
 
