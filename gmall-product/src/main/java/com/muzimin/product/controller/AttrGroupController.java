@@ -51,13 +51,14 @@ public class AttrGroupController {
     }
 
     @PostMapping("/attr/relation/delete")
-    public R deleteRelation(@RequestBody AttrGroupRelation[] vos){
+    public R deleteRelation(@RequestBody AttrGroupRelation[] vos) {
         attrService.deleteRelation(vos);
         return R.ok();
     }
 
     /**
      * 根据分组ID查找关联的所有基本属性
+     *
      * @param attrgroupId
      * @return
      */
@@ -65,6 +66,14 @@ public class AttrGroupController {
     public R attrRelation(@PathVariable("attrgroupId") Long attrgroupId) {
         List<AttrEntity> entityList = attrService.getRelationAttr(attrgroupId);
         return R.ok().put("data", entityList);
+    }
+
+    //获取当前分组没有关联的所有属性
+    @GetMapping("/{attrgroupId}/noattr/relation")
+    public R attrNoRelation(@RequestParam Map<String, Object> params,
+                            @PathVariable("attrgroupId") Long attrgroupId) {
+        PageUtils page = attrService.getNoRelationAttr(params, attrgroupId);
+        return R.ok().put("page", page);
     }
 
     @RequestMapping("/list/{categlogId}")
