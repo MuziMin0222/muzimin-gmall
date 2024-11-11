@@ -3,6 +3,7 @@ package com.muzimin.product.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.muzimin.common.utils.PageUtils;
 import com.muzimin.product.entity.AttrEntity;
+import com.muzimin.product.vo.AttrGroupRelation;
 import com.muzimin.product.vo.AttrRespVo;
 import com.muzimin.product.vo.AttrVo;
 
@@ -29,5 +30,7 @@ public interface AttrService extends IService<AttrEntity> {
     void updateAttr(AttrVo attr);
 
     List<AttrEntity> getRelationAttr(Long attrgroupId);
+
+    void deleteRelation(AttrGroupRelation[] vos);
 }
 

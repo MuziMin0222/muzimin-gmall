@@ -9,12 +9,14 @@ import com.muzimin.product.entity.AttrAttrgroupRelationEntity;
 import com.muzimin.product.entity.AttrGroupEntity;
 import com.muzimin.product.entity.CategoryEntity;
 import com.muzimin.product.service.CategoryService;
+import com.muzimin.product.vo.AttrGroupRelation;
 import com.muzimin.product.vo.AttrRespVo;
 import com.muzimin.product.vo.AttrVo;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -186,6 +188,17 @@ public class AttrServiceImpl extends ServiceImpl<AttrDao, AttrEntity> implements
 
         Collection<AttrEntity> attrEntities = this.listByIds(attrIdList);
         return (List<AttrEntity>) attrEntities;
+    }
+
+    @Override
+    public void deleteRelation(AttrGroupRelation[] vos) {
+        List<AttrAttrgroupRelationEntity> attrAttrgroupRelationEntities = Arrays.stream(vos)
+                .map((item) -> {
+                    AttrAttrgroupRelationEntity attrAttrgroupRelationEntity = new AttrAttrgroupRelationEntity();
+                    BeanUtils.copyProperties(item, attrAttrgroupRelationEntity);
+                    return attrAttrgroupRelationEntity;
+                }).collect(Collectors.toList());
+        relationDao.deleteBatchRelation(attrAttrgroupRelationEntities);
     }
 
 }

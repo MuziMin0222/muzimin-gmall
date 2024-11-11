@@ -8,6 +8,7 @@ import java.util.Map;
 import com.muzimin.product.entity.AttrEntity;
 import com.muzimin.product.service.AttrService;
 import com.muzimin.product.service.CategoryService;
+import com.muzimin.product.vo.AttrGroupRelation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -47,6 +48,12 @@ public class AttrGroupController {
         PageUtils page = attrGroupService.queryPage(params);
 
         return R.ok().put("page", page);
+    }
+
+    @PostMapping("/attr/relation/delete")
+    public R deleteRelation(@RequestBody AttrGroupRelation[] vos){
+        attrService.deleteRelation(vos);
+        return R.ok();
     }
 
     /**
