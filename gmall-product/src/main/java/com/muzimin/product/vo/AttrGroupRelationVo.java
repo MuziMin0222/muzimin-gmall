@@ -7,7 +7,7 @@ import lombok.Data;
  * @date: 2024-11-11 15:27
  **/
 @Data
-public class AttrGroupRelation {
+public class AttrGroupRelationVo {
     private Long attrId;
     private Long attrGroupId;
 }

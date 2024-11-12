@@ -9,7 +9,7 @@ import com.muzimin.product.entity.AttrAttrgroupRelationEntity;
 import com.muzimin.product.entity.AttrGroupEntity;
 import com.muzimin.product.entity.CategoryEntity;
 import com.muzimin.product.service.CategoryService;
-import com.muzimin.product.vo.AttrGroupRelation;
+import com.muzimin.product.vo.AttrGroupRelationVo;
 import com.muzimin.product.vo.AttrRespVo;
 import com.muzimin.product.vo.AttrVo;
 import org.springframework.beans.BeanUtils;
@@ -69,7 +69,7 @@ public class AttrServiceImpl extends ServiceImpl<AttrDao, AttrEntity> implements
         this.save(entity);
 
         // 2、 保存关联关系
-        if (attr.getAttrType() == ProductConstant.AttrEnum.ATTR_TYPE_BASE.getCode()) {
+        if (attr.getAttrType() == ProductConstant.AttrEnum.ATTR_TYPE_BASE.getCode() && attr.getAttrGroupId() != null) {
             AttrAttrgroupRelationEntity attrgroupRelationEntity = new AttrAttrgroupRelationEntity();
             attrgroupRelationEntity.setAttrGroupId(attr.getAttrGroupId());
             attrgroupRelationEntity.setAttrId(entity.getAttrId());
@@ -108,7 +108,7 @@ public class AttrServiceImpl extends ServiceImpl<AttrDao, AttrEntity> implements
                     if ("base".equalsIgnoreCase(attrType)) {
 
                         AttrAttrgroupRelationEntity attrId = relationDao.selectOne(new QueryWrapper<AttrAttrgroupRelationEntity>().eq("attr_id", attrEntity.getAttrId()));
-                        if (attrId != null) {
+                        if (attrId != null && attrId.getAttrGroupId() != null) {
                             AttrGroupEntity attrGroupEntity = attrGroupDao.selectById(attrId.getAttrGroupId());
                             attrRespVo.setGroupName(attrGroupEntity.getAttrGroupName());
                         }
@@ -191,7 +191,7 @@ public class AttrServiceImpl extends ServiceImpl<AttrDao, AttrEntity> implements
     }
 
     @Override
-    public void deleteRelation(AttrGroupRelation[] vos) {
+    public void deleteRelation(AttrGroupRelationVo[] vos) {
         List<AttrAttrgroupRelationEntity> attrAttrgroupRelationEntities = Arrays.stream(vos)
                 .map((item) -> {
                     AttrAttrgroupRelationEntity attrAttrgroupRelationEntity = new AttrAttrgroupRelationEntity();

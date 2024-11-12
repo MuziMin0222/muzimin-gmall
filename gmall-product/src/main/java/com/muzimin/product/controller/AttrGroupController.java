@@ -5,10 +5,12 @@ import java.util.List;
 import java.util.Map;
 
 //import org.apache.shiro.authz.annotation.RequiresPermissions;
+import com.muzimin.product.entity.AttrAttrgroupRelationEntity;
 import com.muzimin.product.entity.AttrEntity;
+import com.muzimin.product.service.AttrAttrgroupRelationService;
 import com.muzimin.product.service.AttrService;
 import com.muzimin.product.service.CategoryService;
-import com.muzimin.product.vo.AttrGroupRelation;
+import com.muzimin.product.vo.AttrGroupRelationVo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -39,6 +41,9 @@ public class AttrGroupController {
     @Autowired
     private AttrService attrService;
 
+    @Autowired
+    private AttrAttrgroupRelationService attrAttrgroupRelationService;
+
     /**
      * 列表
      */
@@ -51,8 +56,15 @@ public class AttrGroupController {
     }
 
     @PostMapping("/attr/relation/delete")
-    public R deleteRelation(@RequestBody AttrGroupRelation[] vos) {
+    public R deleteRelation(@RequestBody AttrGroupRelationVo[] vos) {
         attrService.deleteRelation(vos);
+        return R.ok();
+    }
+
+    @PostMapping("/attr/relation")
+    public R addRelation(@RequestBody List<AttrGroupRelationVo> vos) {
+        attrAttrgroupRelationService.saveBatch(vos);
+
         return R.ok();
     }
 
