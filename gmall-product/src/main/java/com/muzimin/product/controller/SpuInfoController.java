@@ -26,7 +26,7 @@ import com.muzimin.common.utils.R;
  * @date 2024-06-01 17:45:22
  */
 @RestController
-@RequestMapping("/spuinfo")
+@RequestMapping("/product/spuinfo")
 public class SpuInfoController {
     @Autowired
     private SpuInfoService spuInfoService;

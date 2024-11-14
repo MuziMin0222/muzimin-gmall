@@ -26,7 +26,7 @@ import com.muzimin.common.utils.R;
  * @date 2024-06-01 23:04:42
  */
 @RestController
-@RequestMapping("/memberlevel")
+@RequestMapping("/member/memberlevel")
 public class MemberLevelController {
     @Autowired
     private MemberLevelService memberLevelService;
